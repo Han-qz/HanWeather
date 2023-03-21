@@ -1,15 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
+<!--&lt;!&ndash;            app:tabSelectedTextColor - 设置文字被选中后的颜色&ndash;&gt;-->
+<!--&lt;!&ndash;            app:tabIndicatorColor - 设置指示器颜色&ndash;&gt;-->
+<!--&lt;!&ndash;            app:tabIndicatorHeight - 设置指示器高度&ndash;&gt;-->
+<!--    <androidx.viewpager.widget.ViewPager-->
+<!--        android:id="@+id/vp_message"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_weight="1"-->
+<!--        android:layout_height="0dp" />-->
+
+<!--    <com.google.android.material.tabs.TabLayout-->
+<!--        android:id="@+id/tab_message"-->
+<!--        app:tabSelectedTextColor="@color/black"-->
+<!--        app:tabIndicatorColor="@color/purple_200"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+    <TextView
+        android:id="@+id/testposition"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <fragment
         android:id="@+id/choose_area_fragment"
         android:name="com.example.hanweather.ChooseAreaFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</FrameLayout>
+
+
+
+</LinearLayout>

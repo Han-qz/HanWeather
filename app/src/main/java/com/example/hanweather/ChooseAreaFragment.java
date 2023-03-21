@@ -1,6 +1,7 @@
 package com.example.hanweather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +80,19 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    if (getActivity() instanceof MainActivity){
+                        Intent intent = new Intent(getActivity(),WeatherAcitvity.class);
+                        intent.putExtra("weather_id",weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if (getActivity() instanceof WeatherAcitvity) {
+                        WeatherAcitvity activity = (WeatherAcitvity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weatherId);
+                    }
                 }
             }
         });
@@ -95,6 +109,7 @@ public class ChooseAreaFragment extends Fragment {
         queryProvinces();
     }
 
+    //查询全国所有的县，优先从数据库查询，如果没有查询到再去服务器上查询
     private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
@@ -115,6 +130,7 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
 
+    //查询全国所有的市，优先从数据库查询，如果没有查询到再去服务器上查询
     private void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
@@ -134,6 +150,7 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
 
+    //查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询
     private void queryProvinces() {
         titleText.setText("中国");
         backButton.setVisibility(View.GONE);
@@ -152,6 +169,7 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
 
+    //根据传入的地址和类型从服务器上查询省市县数据
     private void queryFromServer(String address, final String type) {
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
@@ -184,6 +202,7 @@ public class ChooseAreaFragment extends Fragment {
             }
             @Override
             public void onFailure(Call call, IOException e) {
+                //通过runOnUiThread()方法回到主线程处理逻辑
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -198,6 +217,7 @@ public class ChooseAreaFragment extends Fragment {
 
     }
 
+    //显示进度对话框
     private void showProgressDialog() {
         if (progressDialog == null){
             progressDialog = new ProgressDialog(getActivity());
@@ -207,6 +227,7 @@ public class ChooseAreaFragment extends Fragment {
         progressDialog.show();
     }
 
+    //关闭进度对话框
     private void closeProgressDialog() {
         if (progressDialog != null){
             progressDialog.dismiss();
