@@ -1,39 +1,32 @@
 package com.example.hanweather;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.baidu.location.LocationClient;
 import com.example.hanweather.gson.Forecast;
 import com.example.hanweather.gson.Weather;
 import com.example.hanweather.util.HttpUtil;
 import com.example.hanweather.util.Utility;
-
 import java.io.IOException;
-
-
-
 import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.Callback;
-
-import android.content.Intent;
 import android.view.LayoutInflater;
-import com.bumptech.glide.Glide;
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationData;
 
 
 public class WeatherAcitvity extends AppCompatActivity {
@@ -64,6 +57,10 @@ public class WeatherAcitvity extends AppCompatActivity {
     private TextView carWashText;
 
     private TextView sportText;
+    public LocationClient mLocationClient;
+    TextView tv_Lat;  //纬度
+    TextView tv_Lon;  //经度
+    TextView tv_Add;  //地址
 
 
     @Override
@@ -76,7 +73,31 @@ public class WeatherAcitvity extends AppCompatActivity {
 //            getWindow().setStatusBarColor(Color.TRANSPARENT);
 //        }
         setContentView(R.layout.activity_weather);
+        LocationClient.setAgreePrivacy(true);
+        try {
+            mLocationClient = new LocationClient(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        LocationClientOption option = new LocationClientOption();
+        option.setOpenGps(true);
+        option.setCoorType("bd09ll"); // 设置坐标类型
+        option.setIsNeedAddress(true); //设置是否需要地址信息，默认不需要
+        mLocationClient.setLocOption(option);
         // 初始化各控件
+        tv_Add = findViewById(R.id.tv_Add);
+        tv_Lon = findViewById(R.id.tv_Lon);
+        tv_Lat = findViewById(R.id.tv_Lat);
+        //设置监听器
+        WeatherAcitvity.MylocationListener myLocationListener = new WeatherAcitvity.MylocationListener();
+        mLocationClient.registerLocationListener(myLocationListener);
+        //开启地图定位图层
+        mLocationClient.start();
+
+        MyLocationConfiguration.LocationMode mCurrentMode = MyLocationConfiguration.LocationMode.FOLLOWING;
+        MyLocationConfiguration mLocationConfiguration = new MyLocationConfiguration(mCurrentMode, true, null, 0xAAFFFF88, 0xAA00FF00);
+
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navButton = (Button) findViewById(R.id.nav_button);
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
@@ -92,14 +113,15 @@ public class WeatherAcitvity extends AppCompatActivity {
         sportText = (TextView) findViewById(R.id.sport_text);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(com.google.android.material.R.color.design_default_color_primary);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefss = PreferenceManager.getDefaultSharedPreferences(this);
+
         navButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-        String weatherString = prefs.getString("weather", null);
+        String weatherString = prefss.getString("weather", null);
         if (weatherString != null) {
             // 有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
@@ -117,8 +139,31 @@ public class WeatherAcitvity extends AppCompatActivity {
                 requestWeather(mWeatherId);
             }
         });
-    }
 
+        }
+
+    private class MylocationListener extends BDAbstractLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            if (bdLocation == null ){
+                return;
+            }
+            MyLocationData locationData = new MyLocationData.Builder()
+                    .accuracy(bdLocation.getRadius())
+                    .direction(bdLocation.getDirection())
+                    .latitude(bdLocation.getLatitude())
+                    .longitude(bdLocation.getLatitude())
+                    .build();
+
+
+            //输出经纬度和地点
+            tv_Add.setText(bdLocation.getAddrStr());
+            tv_Lat.setText(bdLocation.getLatitude()+" ");
+            tv_Lon.setText(bdLocation.getLongitude()+" ");
+
+
+        }
+    }
     /**
      * 根据天气id请求城市天气信息。
      */
@@ -199,4 +244,6 @@ public class WeatherAcitvity extends AppCompatActivity {
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
     }
+
+
 }

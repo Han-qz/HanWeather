@@ -17,6 +17,9 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+
+
+
     <application
         android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
