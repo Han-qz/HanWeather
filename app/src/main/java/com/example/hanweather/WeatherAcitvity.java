@@ -1,12 +1,19 @@
 package com.example.hanweather;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +46,9 @@ import com.baidu.mapapi.map.MyLocationData;
 
 
 public class WeatherAcitvity extends AppCompatActivity {
+
+    public int w;
+    private static final int NOTIFICATION_ID = 1001;
     public DrawerLayout drawerLayout;
     private Button navButton;
     public SwipeRefreshLayout swipeRefresh;
@@ -176,10 +186,11 @@ public class WeatherAcitvity extends AppCompatActivity {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_open ||item.getItemId() == R.id.action_new){
+                if (item.getItemId() == R.id.action_open){
                     Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else if (item.getItemId() == R.id.action_new) {
+                    Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+                } else if (item.getItemId() == R.id.action_del){
                     Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivity(intent);
                 }
@@ -197,6 +208,43 @@ public class WeatherAcitvity extends AppCompatActivity {
 
         popupMenu.show();
     }
+
+
+    private void sendNotification(int w) {
+        //1、NotificationManager
+        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        /** 2、Builder->Notification
+         *  必要属性有三项
+         *  小图标，通过 setSmallIcon() 方法设置
+         *  标题，通过 setContentTitle() 方法设置
+         *  内容，通过 setContentText() 方法设置*/
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentInfo("Content info")
+                .setContentText("现在温度已达到"+w+"℃，请注意防护！")//设置通知内容
+                .setContentTitle("高温预警！")//设置通知标题
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_clear_day))
+                .setSmallIcon(R.drawable.temp)//不能缺少的一个属性
+                //.setSubText("高温预警")
+                .setTicker("滚动消息......")
+                .setWhen(System.currentTimeMillis());//设置通知时间，默认为系统发出通知的时间，通常不用设置
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("001","my_channel",NotificationManager.IMPORTANCE_DEFAULT);
+            channel.enableLights(true); //是否在桌面icon右上角展示小红点
+            channel.setLightColor(Color.GREEN); //小红点颜色
+            channel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+            manager.createNotificationChannel(channel);
+            builder.setChannelId("001");
+        }
+
+        Notification n = builder.build();
+        //3、manager.notify()
+        manager.notify(NOTIFICATION_ID,n);
+    }
+
+
+
+
+
     /**
      * 获取当前位置信息
      */
@@ -273,6 +321,10 @@ public class WeatherAcitvity extends AppCompatActivity {
         String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature + "℃";
+        w = Integer.parseInt(weather.now.temperature);
+        if (w>20){
+            sendNotification(w);
+        }
         String weatherInfo = weather.now.more.info;
         titleCity.setText(cityName);
         //titleUpdateTime.setText(updateTime);
