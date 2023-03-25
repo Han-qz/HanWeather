@@ -10,13 +10,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:alpha="0.8"
-        android:background="#8000"
+        android:background="@drawable/text"
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal" >
             <TextView
@@ -36,7 +36,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
@@ -56,9 +56,10 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_width="wrap_content"

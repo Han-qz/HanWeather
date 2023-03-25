@@ -4,10 +4,11 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:alpha="0.8"
-    android:background="#8000">
+    android:background="@drawable/text">
 
 
     <TextView
+        android:layout_marginTop="20dp"
         android:id="@+id/tv_wendu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,8 +18,8 @@
         />
 
     <LinearLayout
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

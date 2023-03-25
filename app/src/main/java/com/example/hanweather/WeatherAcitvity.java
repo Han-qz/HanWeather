@@ -22,6 +22,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -95,6 +96,7 @@ public class WeatherAcitvity extends AppCompatActivity {
 //            getWindow().setStatusBarColor(Color.TRANSPARENT);
 //        }
         setContentView(R.layout.activity_weather);
+
         //定位到现在的位置
         LocationClient.setAgreePrivacy(true);
         try {
@@ -207,6 +209,7 @@ public class WeatherAcitvity extends AppCompatActivity {
         });
 
         popupMenu.show();
+
     }
 
 
@@ -249,6 +252,7 @@ public class WeatherAcitvity extends AppCompatActivity {
      * 获取当前位置信息
      */
     private class MylocationListener extends BDAbstractLocationListener {
+
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
             if (bdLocation == null ){
@@ -314,6 +318,8 @@ public class WeatherAcitvity extends AppCompatActivity {
     }
 
 
+
+
     /**
      * 处理并展示Weather实体类中的数据。
      */
@@ -329,6 +335,7 @@ public class WeatherAcitvity extends AppCompatActivity {
         titleCity.setText(cityName);
         //titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
+
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();
         for (Forecast forecast : weather.forecastList) {
