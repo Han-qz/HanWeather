@@ -9,8 +9,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:alpha="30"
-        android:background="#88989595"
+        android:alpha="0.8"
+        android:background="#8000"
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
         <LinearLayout

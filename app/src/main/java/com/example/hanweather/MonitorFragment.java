@@ -25,20 +25,26 @@ import com.qweather.sdk.view.QWeather;
 import java.util.List;
 
 public class MonitorFragment extends Fragment {
+
+    public String id;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_monitor, container, false);
+        WeatherAcitvity weatherAcitvity = new WeatherAcitvity();
+
 
         //getPosition(view);
         HeConfig.init("HE2303221709181158", "575bb544ba644c218791ad568648bb0c");//将上边创建项目后的id和key复制进去
         HeConfig.switchToDevService();
         setTempAndHumidity(view);//刚才上边那个函数
+
         return view;
+
     }
 
     public void setTempAndHumidity(View view){
         //location:查询的地区，可通过该地区ID、经纬度进行查询经纬度格式，这里以西安为例，城市编号为"CN101110101"
-        //location可以填城市编号，也可以填经纬度
+        //location可以填城市编号，也可以填经纬度 "CN101110101" id
         QWeather.getWeatherNow(getActivity(), "CN101110101", Lang.ZH_HANS, Unit.METRIC, new QWeather.OnResultWeatherNowListener(){
             public static final String TAG="he_feng_now";
             @Override

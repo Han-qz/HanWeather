@@ -3,12 +3,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,14 +42,15 @@ public class WeatherAcitvity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     private Button navButton;
     public SwipeRefreshLayout swipeRefresh;
-    private String mWeatherId;
+    public String mWeatherId;
 
     private ScrollView weatherLayout;
 
 
     private TextView titleCity;
 
-    private TextView titleUpdateTime;
+    //private TextView titleUpdateTime;
+    private Button titleUpdateTime;
 
     private TextView degreeText;
 
@@ -63,6 +73,8 @@ public class WeatherAcitvity extends AppCompatActivity {
     TextView tv_Add;  //地址
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +85,7 @@ public class WeatherAcitvity extends AppCompatActivity {
 //            getWindow().setStatusBarColor(Color.TRANSPARENT);
 //        }
         setContentView(R.layout.activity_weather);
+        //定位到现在的位置
         LocationClient.setAgreePrivacy(true);
         try {
             mLocationClient = new LocationClient(this);
@@ -93,7 +106,6 @@ public class WeatherAcitvity extends AppCompatActivity {
         mLocationClient.registerLocationListener(myLocationListener);
         //开启地图定位图层
         mLocationClient.start();
-
         MyLocationConfiguration.LocationMode mCurrentMode = MyLocationConfiguration.LocationMode.FOLLOWING;
         MyLocationConfiguration mLocationConfiguration = new MyLocationConfiguration(mCurrentMode, true, null, 0xAAFFFF88, 0xAA00FF00);
 
@@ -102,7 +114,15 @@ public class WeatherAcitvity extends AppCompatActivity {
         navButton = (Button) findViewById(R.id.nav_button);
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
         titleCity = (TextView) findViewById(R.id.title_city);
-        titleUpdateTime = (TextView) findViewById(R.id.title_update_time);
+        //titleUpdateTime = (TextView) findViewById(R.id.title_update_time);
+        titleUpdateTime = (Button) findViewById(R.id.title_update_time);
+        titleUpdateTime.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(titleUpdateTime);
+            }
+        });
         degreeText = (TextView) findViewById(R.id.degree_text);
         weatherInfoText = (TextView) findViewById(R.id.weather_info_text);
         forecastLayout = (LinearLayout) findViewById(R.id.forecast_layout);
@@ -133,6 +153,7 @@ public class WeatherAcitvity extends AppCompatActivity {
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(mWeatherId);
         }
+        //刷新天气
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -142,6 +163,43 @@ public class WeatherAcitvity extends AppCompatActivity {
 
         }
 
+    @SuppressLint("ResourceType")
+    private void showPopupMenu(View view) {
+        // View当前PopupMenu显示的相对View的位置
+        PopupMenu popupMenu = new PopupMenu(this, view);
+
+        // menu布局
+        popupMenu.getMenuInflater().inflate(R.menu.main, popupMenu.getMenu());
+
+
+        // menu的item点击事件
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_open ||item.getItemId() == R.id.action_new){
+                    Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
+
+        // PopupMenu关闭事件
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                //Toast.makeText(getApplicationContext(), "关闭PopupMenu", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        popupMenu.show();
+    }
+    /**
+     * 获取当前位置信息
+     */
     private class MylocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
@@ -164,13 +222,14 @@ public class WeatherAcitvity extends AppCompatActivity {
 
         }
     }
+
     /**
      * 根据天气id请求城市天气信息。
      */
     public void requestWeather(final String weatherId) {
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId;
+        //String weatherUrl = "https://devapi.qweather.com/v7/weather/now?location=" + weatherId +"&key=5cd818a12ddc49c999cf4e9206c68942";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
@@ -216,7 +275,7 @@ public class WeatherAcitvity extends AppCompatActivity {
         String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.more.info;
         titleCity.setText(cityName);
-        titleUpdateTime.setText(updateTime);
+        //titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();

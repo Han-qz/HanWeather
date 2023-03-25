@@ -56,6 +56,8 @@ public class ChooseAreaFragment extends Fragment {
     //当前选中的级别
     private int currentLevel;
 
+    public String location_id;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,6 +84,7 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 }else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
+                    //location_id = weatherId;
                     if (getActivity() instanceof MainActivity){
                         Intent intent = new Intent(getActivity(),WeatherAcitvity.class);
                         intent.putExtra("weather_id",weatherId);
