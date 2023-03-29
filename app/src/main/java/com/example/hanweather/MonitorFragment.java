@@ -88,9 +88,8 @@ public class MonitorFragment extends Fragment {
                         }
                     });
                     /*注意这里对控件显示的操作被放在getActivity()...void run(){}里了
-                    这是因为我是在Fragment里操作的，如果把这些放在外边会抛出错误
-                    在Activity中时可以把这些放在外边，不用带什么runOnUi...
-                    参考了https://blog.csdn.net/i_nclude/article/details/105563688*/
+                    这是因为是在Fragment里操作的，如果把这些放在外边会抛出错误
+                    在Activity中时可以把这些放在外边，不用带什么runOnUi... */
 
                 }
                 else {

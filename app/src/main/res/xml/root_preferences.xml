@@ -1,0 +1,55 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <EditTextPreference
+        app:title="城市管理"
+        />
+    <PreferenceCategory app:title="@string/language_select">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/system_language" />
+
+        <SwitchPreferenceCompat
+
+            app:key="attachment"
+            app:title="@string/chinese" />
+
+        <SwitchPreferenceCompat
+
+            app:key="attachment"
+            app:title="@string/english" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="单位选择">
+
+        <SwitchPreferenceCompat
+            app:key="sync1"
+            app:title="华氏度" />
+
+        <SwitchPreferenceCompat
+
+            app:key="attachment"
+            app:title="摄氏度" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="字体大小">
+
+        <SwitchPreferenceCompat
+            app:key="sync2"
+            app:title="大" />
+
+        <SwitchPreferenceCompat
+
+            app:key="attachment"
+            app:title="中" />
+
+        <SwitchPreferenceCompat
+
+            app:key="attachment"
+            app:title="小" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

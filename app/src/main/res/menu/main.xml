@@ -8,11 +8,11 @@
         android:orderInCategory="100"
         android:title="分享天气"
         app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_new"
-        android:orderInCategory="100"
-        android:title="反馈天气"
-        app:showAsAction="never"/>
+<!--    <item-->
+<!--        android:id="@+id/action_new"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:title="反馈天气"-->
+<!--        app:showAsAction="never"/>-->
     <item
         android:id="@+id/action_del"
         android:orderInCategory="100"

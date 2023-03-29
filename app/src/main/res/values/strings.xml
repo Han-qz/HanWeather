@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">HanWeather</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="setting">设置</string>
+    <string name="language_select">语言选择</string>
+
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="system_language">系统语言</string>
+    <string name="chinese">中文</string>
+    <string name="english">英文</string>
 </resources>

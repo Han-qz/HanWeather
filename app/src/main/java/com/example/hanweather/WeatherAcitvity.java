@@ -54,29 +54,17 @@ public class WeatherAcitvity extends AppCompatActivity {
     private Button navButton;
     public SwipeRefreshLayout swipeRefresh;
     public String mWeatherId;
-
     private ScrollView weatherLayout;
-
-
     private TextView titleCity;
-
     //private TextView titleUpdateTime;
     private Button titleUpdateTime;
-
     private TextView degreeText;
-
     private TextView weatherInfoText;
-
     private LinearLayout forecastLayout;
-
     private TextView aqiText;
-
     private TextView pm25Text;
-
     private TextView comfortText;
-
     private TextView carWashText;
-
     private TextView sportText;
     public LocationClient mLocationClient;
     TextView tv_Lat;  //纬度
@@ -84,20 +72,15 @@ public class WeatherAcitvity extends AppCompatActivity {
     TextView tv_Add;  //地址
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (Build.VERSION.SDK_INT >= 21) {
-//            View decorView = getWindow().getDecorView();
-//            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-//            getWindow().setStatusBarColor(Color.TRANSPARENT);
-//        }
         setContentView(R.layout.activity_weather);
 
-        //定位到现在的位置
+
+        /**
+         * 定位到现在的位置
+         */
         LocationClient.setAgreePrivacy(true);
         try {
             mLocationClient = new LocationClient(this);
@@ -122,19 +105,15 @@ public class WeatherAcitvity extends AppCompatActivity {
         MyLocationConfiguration mLocationConfiguration = new MyLocationConfiguration(mCurrentMode, true, null, 0xAAFFFF88, 0xAA00FF00);
 
 
+        /**
+         * 初始化
+         */
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navButton = (Button) findViewById(R.id.nav_button);
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
         titleCity = (TextView) findViewById(R.id.title_city);
         //titleUpdateTime = (TextView) findViewById(R.id.title_update_time);
         titleUpdateTime = (Button) findViewById(R.id.title_update_time);
-        titleUpdateTime.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                showPopupMenu(titleUpdateTime);
-            }
-        });
         degreeText = (TextView) findViewById(R.id.degree_text);
         weatherInfoText = (TextView) findViewById(R.id.weather_info_text);
         forecastLayout = (LinearLayout) findViewById(R.id.forecast_layout);
@@ -147,12 +126,32 @@ public class WeatherAcitvity extends AppCompatActivity {
         swipeRefresh.setColorSchemeResources(com.google.android.material.R.color.design_default_color_primary);
         SharedPreferences prefss = PreferenceManager.getDefaultSharedPreferences(this);
 
+
+        /**
+         * 右侧菜单栏点击展示
+         */
+        titleUpdateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(titleUpdateTime);
+            }
+        });
+
+
+        /**
+         * 左侧城市选择页面展示
+         */
         navButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
+
+        /**
+         * 显示天气数据信息
+         */
         String weatherString = prefss.getString("weather", null);
         if (weatherString != null) {
             // 有缓存时直接解析天气数据
@@ -165,7 +164,11 @@ public class WeatherAcitvity extends AppCompatActivity {
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(mWeatherId);
         }
-        //刷新天气
+
+
+        /**
+         * 刷新天气
+         */
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -173,8 +176,11 @@ public class WeatherAcitvity extends AppCompatActivity {
             }
         });
 
-        }
+    }
 
+    /**
+     * 菜单栏展示及item点击事件
+     */
     @SuppressLint("ResourceType")
     private void showPopupMenu(View view) {
         // View当前PopupMenu显示的相对View的位置
@@ -189,11 +195,15 @@ public class WeatherAcitvity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_open){
-                    Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-                } else if (item.getItemId() == R.id.action_new) {
-                    Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-                } else if (item.getItemId() == R.id.action_del){
-                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    //Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+                    shareSoftwareMsg("分享当前天气");
+                }
+//                else if (item.getItemId() == R.id.action_new) {
+//                    Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+//                }
+                else if (item.getItemId() == R.id.action_del){
+                    //Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    Intent intent=new Intent(WeatherAcitvity.this,SettingsActivity.class);
                     startActivity(intent);
                 }
                 return false;
@@ -211,8 +221,17 @@ public class WeatherAcitvity extends AppCompatActivity {
         popupMenu.show();
 
     }
+    private void shareSoftwareMsg(String s) {
+        /* 分享软件的函数*/
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT,s);
+        startActivity(Intent.createChooser(intent,"HanWeather"));
+    }
 
-
+    /**
+     * 气温高于20度时发送通知
+     */
     private void sendNotification(int w) {
         //1、NotificationManager
         NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -245,9 +264,6 @@ public class WeatherAcitvity extends AppCompatActivity {
     }
 
 
-
-
-
     /**
      * 获取当前位置信息
      */
@@ -274,6 +290,7 @@ public class WeatherAcitvity extends AppCompatActivity {
 
         }
     }
+
 
     /**
      * 根据天气id请求城市天气信息。
@@ -316,8 +333,6 @@ public class WeatherAcitvity extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     /**
